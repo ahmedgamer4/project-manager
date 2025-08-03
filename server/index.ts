@@ -1,5 +1,5 @@
-import { db } from '@/db';
-import { users } from '@/db/schema';
+import { projectsRouter } from './modules/projects/projects.router';
+import { workspacesRouter } from './modules/workspaces/workspaces.router';
 import { publicProcedure, router } from './trpc';
 
 export const appRouter = router({
@@ -8,9 +8,8 @@ export const appRouter = router({
       status: 'ok',
     };
   }),
-  getUsers: publicProcedure.query(() => {
-    return db.select().from(users);
-  }),
+  workspaces: workspacesRouter,
+  projects: projectsRouter,
 });
 
 export type AppRouter = typeof appRouter;
