@@ -1,8 +1,31 @@
 'use client';
 
-import { ChevronDown, Plus } from 'lucide-react';
-import { useState } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { ChevronDown, Loader2, Plus } from 'lucide-react';
+import { useParams } from 'next/navigation';
+import { useMemo, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import type { z } from 'zod';
+import { trpc } from '@/app/_trpc/client';
+import { Loading } from '@/components/loading';
 import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -11,70 +34,143 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
+import { Textarea } from '@/components/ui/textarea';
+import { createProjectDto } from '@/server/modules/projects/dto/create-project.dto';
 
 export function ProjectsSection() {
+  const { workspace } = useParams();
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const resolver = useMemo(() => zodResolver(createProjectDto), []);
+  const form = useForm<z.infer<typeof createProjectDto>>({
+    resolver,
+    defaultValues: {
+      name: '',
+      description: '',
+      workspaceId: '',
+    },
+  });
+
+  const trpcUtils = trpc.useUtils();
   const [isExpanded, setIsExpanded] = useState(true);
+  const { data: projects, isLoading, isError } = trpc.projects.all.useQuery();
+  const createProject = trpc.projects.create.useMutation({
+    onSuccess: () => {
+      trpcUtils.projects.all.invalidate();
+      setDialogOpen(false);
+      form.reset();
+    },
+  });
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  if (isError) {
+    return <div>Error</div>;
+  }
+
+  function onSubmit(data: z.infer<typeof createProjectDto>) {
+    createProject.mutate({
+      ...data,
+      workspaceId: workspace as string,
+    });
+  }
 
   return (
-    <SidebarGroup>
-      <div className="flex items-center justify-between">
-        <SidebarGroupLabel
-          asChild
-          className="flex cursor-pointer items-center gap-2"
-          onClick={() => setIsExpanded(!isExpanded)}
-        >
-          <button className="flex items-center gap-2" type="button">
-            <ChevronDown
-              className={`h-4 w-4 transition-transform ${isExpanded ? 'rotate-0' : '-rotate-90'}`}
+    <Dialog onOpenChange={setDialogOpen} open={dialogOpen}>
+      <SidebarGroup>
+        <div className="flex items-center justify-between">
+          <SidebarGroupLabel
+            asChild
+            className="flex cursor-pointer items-center gap-2"
+            onClick={() => setIsExpanded(!isExpanded)}
+          >
+            <button className="flex items-center gap-2" type="button">
+              <ChevronDown
+                className={`h-4 w-4 transition-transform ${isExpanded ? 'rotate-0' : '-rotate-90'}`}
+              />
+              <span>Projects</span>
+            </button>
+          </SidebarGroupLabel>
+          <DialogTrigger asChild>
+            <Button
+              className="h-6 w-6"
+              onClick={(e) => {
+                e.stopPropagation();
+                // Add new project logic
+              }}
+              size="icon"
+              variant="ghost"
+            >
+              <Plus className="h-3 w-3" />
+            </Button>
+          </DialogTrigger>
+        </div>
+
+        {isExpanded && (
+          <SidebarGroupContent className="px-2">
+            <SidebarMenu>
+              {projects?.map((p) => (
+                <SidebarMenuItem key={p.id}>
+                  <SidebarMenuButton>
+                    <div className="flex h-4 w-4 items-center justify-center rounded-sm bg-primary p-2 text-primary-foreground text-sm">
+                      {p.name.charAt(0)}
+                    </div>
+                    <span>{p.name}</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        )}
+      </SidebarGroup>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Create Project</DialogTitle>
+        </DialogHeader>
+        <DialogDescription>Create a new project</DialogDescription>
+        <Form {...form}>
+          <form className="space-y-2" onSubmit={form.handleSubmit(onSubmit)}>
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                </FormItem>
+              )}
             />
-            <span>Projects</span>
-          </button>
-        </SidebarGroupLabel>
-        <Button
-          className="h-6 w-6"
-          onClick={(e) => {
-            e.stopPropagation();
-            // Add new project logic
-          }}
-          size="icon"
-          variant="ghost"
-        >
-          <Plus className="h-3 w-3" />
-        </Button>
-      </div>
-
-      {isExpanded && (
-        <SidebarGroupContent className="px-2">
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton>
-                <div className="flex h-4 w-4 items-center justify-center rounded-sm bg-primary p-2 text-primary-foreground text-sm">
-                  A
-                </div>
-                <span>Project Alpha</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-
-            <SidebarMenuItem>
-              <SidebarMenuButton>
-                <div className="flex h-4 w-4 items-center justify-center rounded-sm bg-primary p-2 text-primary-foreground text-sm">
-                  B
-                </div>
-                <span>Project Beta</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-
-            <SidebarMenuItem>
-              <SidebarMenuButton>
-                <div className="flex h-4 w-4 items-center justify-center rounded-sm bg-primary p-2 text-primary-foreground text-sm">
-                  G
-                </div>
-                <span>Project Gamma</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarGroupContent>
-      )}
-    </SidebarGroup>
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <Textarea {...field} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <DialogFooter>
+              <Button
+                disabled={createProject.isPending || !form.formState.isValid}
+                type="submit"
+                variant="skeuomorphic-subtle"
+              >
+                {createProject.isPending ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  'Create'
+                )}
+              </Button>
+            </DialogFooter>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
   );
 }
