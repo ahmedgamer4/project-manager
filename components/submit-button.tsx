@@ -15,7 +15,12 @@ export function SubmitButton({
   const { pending } = useFormStatus();
 
   return (
-    <Button className={cn(className)} disabled={pending} type="submit">
+    <Button
+      className={cn(className)}
+      disabled={pending}
+      type="submit"
+      variant={'skeuomorphic'}
+    >
       {pending && <Loader2 className="mr-1 h-4 w-4 animate-spin" />}
       {children}
     </Button>

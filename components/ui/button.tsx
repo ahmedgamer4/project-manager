@@ -21,9 +21,9 @@ const buttonVariants = cva(
           'hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50',
         link: 'text-primary underline-offset-4 hover:underline',
         skeuomorphic:
-          'border border-primary bg-gradient-to-b from-primary to-primary/80 text-white shadow-[0_4px_0_0_rgb(30_58_138)] hover:translate-y-0.5 hover:shadow-[0_2px_0_0_rgb(30_58_138)] focus-visible:ring-primary/50 active:translate-y-1 active:bg-gradient-to-b active:from-primary active:to-primary active:shadow-[0_1px_0_0_rgb(30_58_138)]',
+          'bg-gradient-to-b from-primary/75 to-primary text-white shadow-[0_2px_4px_rgba(0,0,0,0.1)] hover:translate-y-0.5 hover:shadow-[inset_0_1px_3px_rgba(0,0,0,0.15)] focus-visible:ring-primary/30 active:translate-y-1 active:bg-gradient-to-b active:from-primary active:to-primary active:shadow-[inset_0_1px_2px_rgba(0,0,0,0.2)]',
         'skeuomorphic-subtle':
-          'bg-gradient-to-b from-primary/75 to-primary text-white shadow-[0_2px_4px_rgba(0,0,0,0.1)] hover:translate-y-0.5 hover:shadow-[0_1px_3px_rgba(0,0,0,0.15)] focus-visible:ring-primary/30 active:translate-y-1 active:bg-gradient-to-b active:from-primary active:to-primary active:shadow-[0_1px_2px_rgba(0,0,0,0.2)]',
+          'bg-gradient-to-b from-primary/75 to-primary text-white shadow-[0_2px_4px_rgba(0,0,0,0.1)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.15)] focus-visible:ring-primary/30 active:translate-y-1 active:bg-gradient-to-b active:from-primary active:to-primary active:shadow-[0_1px_2px_rgba(0,0,0,0.2)]',
       },
       size: {
         default: 'h-9 px-4 py-2 has-[>svg]:px-3',
