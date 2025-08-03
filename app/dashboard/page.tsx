@@ -11,8 +11,6 @@ import { SidebarProvider } from '@/components/ui/sidebar';
 import data from './data.json' with { type: 'json' };
 
 export default function Page() {
-  const { data: users } = trpc.getUsers.useQuery();
-  console.log(users);
   return (
     <SidebarProvider
       style={
