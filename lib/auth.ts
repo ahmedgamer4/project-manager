@@ -8,7 +8,6 @@ import {
   users,
   verifications,
 } from '@/db/schema/auth-schema';
-import { attempt } from './error-handling';
 import { resend } from './resend';
 
 export const auth = betterAuth({
@@ -38,7 +37,6 @@ export const auth = betterAuth({
         html: `Click the link to verify your email: ${url}`,
       });
       if (error) {
-        console.error(error);
         throw error;
       }
     },
