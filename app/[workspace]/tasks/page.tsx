@@ -23,11 +23,7 @@ export default function TasksPage() {
             <TabsTrigger value="kanban">Kanban</TabsTrigger>
             <TabsTrigger value="calendar">Calendar</TabsTrigger>
           </TabsList>
-          <Button
-            className="!gap-2"
-            size={'sm'}
-            variant={'skeuomorphic-subtle'}
-          >
+          <Button className="!gap-2" size={'sm'} variant={'skeuomorphic'}>
             <Plus />
             New
           </Button>
