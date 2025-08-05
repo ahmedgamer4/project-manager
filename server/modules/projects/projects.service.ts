@@ -17,9 +17,10 @@ export class ProjectService {
     return ProjectService.instance;
   }
 
-  async getAll(userId: string) {
+  async getAll(userId: string, workspaceId: string) {
     const [result, error] = await attempt(
       db.query.projects.findMany({
+        where: eq(projects.workspaceId, workspaceId),
         with: {
           workspace: {
             columns: { id: true },

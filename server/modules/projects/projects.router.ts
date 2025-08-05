@@ -1,3 +1,4 @@
+import { z } from 'zod';
 import { protectedProcedure, router } from '../../trpc';
 import { createProjectDto } from './dto/create-project.dto';
 import { ProjectService } from './projects.service';
@@ -5,9 +6,15 @@ import { ProjectService } from './projects.service';
 const projectService = ProjectService.getInstance();
 
 export const projectsRouter = router({
-  all: protectedProcedure.query(({ ctx }) => {
-    return projectService.getAll(ctx.user.id);
-  }),
+  all: protectedProcedure
+    .input(
+      z.object({
+        workspaceId: z.string(),
+      })
+    )
+    .query(({ ctx, input }) => {
+      return projectService.getAll(ctx.user.id, input.workspaceId);
+    }),
 
   create: protectedProcedure
     .input(createProjectDto)
