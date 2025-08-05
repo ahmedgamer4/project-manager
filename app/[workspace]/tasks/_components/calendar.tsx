@@ -39,6 +39,7 @@ export const TasksCalendar = () => {
           <Link
             className="flex flex-col gap-2 rounded-md border border-border p-1"
             href={`/tasks/${feature.id}`}
+            key={feature.id}
           >
             <CalendarItem feature={feature} key={feature.id} />
           </Link>

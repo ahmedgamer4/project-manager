@@ -5,6 +5,7 @@ import { ChevronDown, Loader2, Plus, Search, SquarePen } from 'lucide-react';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import { z } from 'zod';
 import { trpc } from '@/app/_trpc/client';
 import { Loading } from '@/components/loading';
@@ -61,6 +62,10 @@ export function WorkspaceSwitcher() {
       form.reset();
       setDialogOpen(false);
       trpcUtils.workspaces.all.invalidate();
+      toast.success('Workspace created successfully');
+    },
+    onError: () => {
+      toast.error('Failed to create workspace');
     },
   });
 
