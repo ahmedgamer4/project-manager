@@ -298,7 +298,7 @@ export const CalendarBody = ({ features, children }: CalendarBodyProps) => {
             'relative aspect-square overflow-hidden border-t border-r',
             index % 7 === 6 && 'border-r-0'
           )}
-          key={index}
+          key={day?.toString()}
         >
           {day}
         </div>
@@ -347,7 +347,7 @@ export const CalendarMonthPicker = ({
         search: 'Search month',
       }}
       setValue={(value) =>
-        setMonth(Number.parseInt(value) as CalendarState['month'])
+        setMonth(Number.parseInt(value, 10) as CalendarState['month'])
       }
       value={month.toString()}
     />
@@ -379,7 +379,7 @@ export const CalendarYearPicker = ({
         empty: 'No year found',
         search: 'Search year',
       }}
-      setValue={(value) => setYear(Number.parseInt(value))}
+      setValue={(value) => setYear(Number.parseInt(value, 10))}
       value={year.toString()}
     />
   );
@@ -430,7 +430,9 @@ export type CalendarDateProps = {
 };
 
 export const CalendarDate = ({ children }: CalendarDateProps) => (
-  <div className="flex items-center justify-between p-3">{children}</div>
+  <div className="flex flex-col items-end justify-between p-3 md:flex-row md:items-center">
+    {children}
+  </div>
 );
 
 export type CalendarHeaderProps = {
