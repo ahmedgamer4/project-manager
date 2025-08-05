@@ -95,7 +95,9 @@ export function WorkspaceSwitcher() {
               <div className="flex h-6 w-6 items-center justify-center rounded bg-purple-500 font-medium text-white text-xs">
                 T
               </div>
-              <span className="font-medium text-sm">testFirst1</span>
+              <span className="flex-1 truncate font-medium text-sm">
+                {workspaces?.[0]?.name}
+              </span>
               <ChevronDown className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
